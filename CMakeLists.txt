@@ -13,35 +13,33 @@
 # ============================================================================
 
 set (PROJECT_NAME "refcnt-helpers")
+set (INCLUDE_PILE_SOURCES_DIRECTLY ON)
+
 project(${PROJECT_NAME})
 cmake_minimum_required(VERSION 2.8.11)
 
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/build/bin")
+set( CMAKE_RUNTIME_OUTPUT_DIRECTORY
+    "${PROJECT_BINARY_DIR}/build/bin" )
+set( EXECUTABLE_OUTPUT_PATH
+    "${PROJECT_BINARY_DIR}/build/bin" )
+set( LIBRARY_OUTPUT_PATH
+    "${PROJECT_BINARY_DIR}/build/lib" )
+set( INCLUDE_OUTPUT_PATH
+    "${PROJECT_BINARY_DIR}/build/include/${PROJECT_NAME}" )
+include_directories("${PROJECT_BINARY_DIR}/build/include")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 
-#set (INCLUDE_PILE_SOURCES_DIRECTLY ON)
-#if (INCLUDE_PILE_SOURCES_DIRECTLY)
-#    include(pile_support)
-#    pileInclude (RefCnt)
+if(INCLUDE_PILE_SOURCES_DIRECTLY)
+    include(pile_support)
+    pileInclude (RefCnt)
+    refcntInit(PILE)
+else()
+    set (REFCNT_BUILD_MODE SHARED)
+    add_subdirectory(refcnt)
+endif()
 
-#    refcntInit(PILE)
-#    add_executable(
-#        ${PROJECT_NAME}
-#        main.cc
-#        ${REFCNT_SOURCES}
-#        ${REFCNT_HEADERS})
-#else()
-#    set (REFCNT_BUILD_MODE SHARED)
-
-#    add_subdirectory(refcnt)
-#    add_executable(
-#        ${PROJECT_NAME}
-#        main.cc)
-#    target_link_libraries(
-#        ${PROJECT_NAME}
-#        refcnt)
-#endif()
-
-
+add_subdirectory(tests)
 
 # ============================================================================
