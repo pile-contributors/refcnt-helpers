@@ -16,6 +16,10 @@
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
+if (NOT INCLUDE_PILE_SOURCES_DIRECTLY)
+    set (REFCNT_LIBRARY refcnt)
+endif()
+
 add_executable(test_basic
     ${REFCNT_SOURCES}
     ${REFCNT_HEADERS}
