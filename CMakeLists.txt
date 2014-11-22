@@ -10,13 +10,23 @@
 # Usage
 # -----
 # 
+# You can use the resources in this project to understand this pile,
+# to use it as a model for your own piles or to improve and test this pile.
+#
+# The project has an optional dependency on Qt5 library. If found,
+# the refcnt pile will use the definitions for shared libraries.
+#
 # ============================================================================
 
 set (PROJECT_NAME "refcnt-helpers")
-set (INCLUDE_PILE_SOURCES_DIRECTLY ON)
 
 project(${PROJECT_NAME})
 cmake_minimum_required(VERSION 2.8.11)
+enable_testing()
+
+option( INCLUDE_PILE_SOURCES_DIRECTLY
+        "Use internal refcnt as a pile (ON) or as a library (OFF)"
+        OFF)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -26,10 +36,16 @@ set( EXECUTABLE_OUTPUT_PATH
     "${PROJECT_BINARY_DIR}/build/bin" )
 set( LIBRARY_OUTPUT_PATH
     "${PROJECT_BINARY_DIR}/build/lib" )
-set( INCLUDE_OUTPUT_PATH
-    "${PROJECT_BINARY_DIR}/build/include/${PROJECT_NAME}" )
-include_directories("${PROJECT_BINARY_DIR}/build/include")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
+
+include_directories(
+    "${CMAKE_CURRENT_BINARY_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}")
+
+find_package(Qt5 COMPONENTS Core)
+if(Qt5Core_FOUND)
+    include_directories(
+         ${Qt5Core_INCLUDE_DIRS})
+endif()
 
 if(INCLUDE_PILE_SOURCES_DIRECTLY)
     include(pile_support)

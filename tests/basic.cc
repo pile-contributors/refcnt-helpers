@@ -36,14 +36,14 @@ public:
     void SetUp(){
         t_1 = new TestRefCnt ();
         t_2 = new TestRefCnt ();
-        t_2->acquire();
+        t_2->reference(this);
         t_3 = new TestRefCnt ();
-        t_3->acquire();
-        t_3->acquire();
+        t_3->reference(this);
+        t_3->reference(this);
         t_4 = new TestRefCnt ();
-        t_4->acquire();
-        t_4->acquire();
-        t_4->acquire();
+        t_4->reference(this);
+        t_4->reference(this);
+        t_4->reference(this);
     }
     void TearDown(){
         t_1->forceRelease();
@@ -69,10 +69,10 @@ TEST_F(TestUsage, initial_state) {
 }
 
 TEST_F(TestUsage, increasing) {
-    t_1->acquire();
-    t_2->acquire();
-    t_3->acquire();
-    t_4->acquire();
+    t_1->reference(this);
+    t_2->reference(this);
+    t_3->reference(this);
+    t_4->reference(this);
     EXPECT_EQ(t_1->referenceCount (), 2);
     EXPECT_EQ(t_2->referenceCount (), 3);
     EXPECT_EQ(t_3->referenceCount (), 4);
@@ -80,9 +80,9 @@ TEST_F(TestUsage, increasing) {
 }
 
 TEST_F(TestUsage, decreasing) {
-    t_2->release();
-    t_3->release();
-    t_4->release();
+    t_2->release(this);
+    t_3->release(this);
+    t_4->release(this);
     EXPECT_EQ(t_2->referenceCount (), 1);
     EXPECT_EQ(t_3->referenceCount (), 2);
     EXPECT_EQ(t_4->referenceCount (), 3);
@@ -94,6 +94,6 @@ TEST_F(TestUsage, delete_at_zero) {
             new TestUsage::TestRefCnt();
     t_loc_1->setDelMarker (&t_loc_1_deleted);
     ASSERT_FALSE (t_loc_1_deleted);
-    t_loc_1->release ();
+    t_loc_1->release (this);
     ASSERT_TRUE (t_loc_1_deleted);
 }
